@@ -16,5 +16,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Gate note
         run: echo "Manual approval required by GitHub Environment protection rules."
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+      - name: Add host key
+        run: |
+          ssh-keyscan -p "${{ secrets.DEPLOY_PORT }}" "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+      - name: Connectivity preflight (safe)
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.DEPLOY_PORT }}" \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "echo Connected && test -d '${{ secrets.DEPLOY_PATH }}' || mkdir -p '${{ secrets.DEPLOY_PATH }}'"
       - name: Deploy placeholder
-        run: echo "Wire Oracle deploy script here after infra secrets are configured."
+        run: echo "Preflight complete. Wire staged deploy commands next."

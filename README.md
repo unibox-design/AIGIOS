@@ -10,7 +10,7 @@ A clean, isolated workspace for running a governed multi-agent delivery system a
 ## Scope (v0.1)
 - Multi-agent role model (`research`, `planner`, `builder`, `qa`, `ops`, `governor`).
 - GitHub-first governance (PR checks, protected branches, manual deploy approval).
-- Oracle server runtime plan with backup/rollback and observability.
+- AWS EC2 runtime plan with backup/rollback and observability.
 
 ## Repository Layout
 - `docs/architecture`: system design and data/control flow.
@@ -32,5 +32,4 @@ A clean, isolated workspace for running a governed multi-agent delivery system a
 1. Initialize this folder as a separate git repository.
 2. Push to GitHub as `aigios-agent-factory`.
 3. Apply branch protection (`main` requires checks + manual review).
-4. Deploy to Oracle VM and run in staged mode.
-
+4. Deploy to AWS EC2 and run in staged mode.

@@ -18,7 +18,7 @@ Build a separate agent-orchestration repository while keeping the current AIGIOS
 - CI validates quality/security and reports status.
 
 3. Runtime Plane
-- Oracle VM runs gateway, runners, backups, observability.
+- Cloud VM (AWS EC2 for now) runs gateway, runners, backups, observability.
 - Deploys only from approved tags/commits.
 
 ## Data/Control Flow
@@ -34,4 +34,3 @@ Build a separate agent-orchestration repository while keeping the current AIGIOS
 - Fully autonomous prod deploys.
 - Tokenized incentives/reputation economy.
 - Hostile multi-tenant trust model.
-
