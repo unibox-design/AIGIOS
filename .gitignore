@@ -1,0 +1,14 @@
+# Runtime artifacts
+runtime/
+logs/
+*.log
+
+# Env/secrets
+.env
+.env.*
+!.env.example
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

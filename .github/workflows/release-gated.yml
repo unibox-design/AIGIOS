@@ -1,0 +1,20 @@
+name: Release (Gated)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deployment target"
+        required: true
+        default: "staging"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate note
+        run: echo "Manual approval required by GitHub Environment protection rules."
+      - name: Deploy placeholder
+        run: echo "Wire Oracle deploy script here after infra secrets are configured."

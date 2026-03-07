@@ -1,0 +1,34 @@
+# Example only. Adjust to your installed OpenClaw version/schema.
+profiles:
+  default:
+    workspace: /opt/aigios-agent-factory/workspaces/default
+    state_dir: /opt/aigios-agent-factory/state/default
+    sandbox: docker
+agents:
+  - name: research-agent
+    profile: default
+  - name: planner-agent
+    profile: default
+  - name: builder-agent
+    profile: default
+  - name: qa-agent
+    profile: default
+  - name: ops-agent
+    profile: default
+  - name: governor-agent
+    profile: default
+routing:
+  bindings:
+    - pattern: "research:*"
+      target: research-agent
+    - pattern: "plan:*"
+      target: planner-agent
+    - pattern: "build:*"
+      target: builder-agent
+    - pattern: "qa:*"
+      target: qa-agent
+    - pattern: "ops:*"
+      target: ops-agent
+    - pattern: "govern:*"
+      target: governor-agent
+
