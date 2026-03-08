@@ -1,0 +1,44 @@
+name: Agent Chain (Dry Run)
+
+on:
+  workflow_dispatch:
+    inputs:
+      objective:
+        description: "Goal to pass into planner"
+        required: false
+        default: "Create a concise implementation plan for AIGIOS Agent Factory autonomous PR-only delivery with gated release, rollback, and backups."
+      timeout_seconds:
+        description: "Per-agent timeout seconds"
+        required: false
+        default: "120"
+      thinking:
+        description: "Thinking level"
+        required: false
+        default: "low"
+
+jobs:
+  dry_run:
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          command -v openclaw
+          command -v jq
+      - name: Run agent chain
+        id: chain
+        env:
+          AGENT_CHAIN_TIMEOUT: ${{ inputs.timeout_seconds }}
+          AGENT_CHAIN_THINKING: ${{ inputs.thinking }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          scripts/run_agent_chain.sh "${{ inputs.objective }}"
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-chain-dryrun-${{ github.run_id }}
+          path: .artifacts/agent-chain
+          if-no-files-found: warn
