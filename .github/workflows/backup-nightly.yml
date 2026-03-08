@@ -1,0 +1,36 @@
+name: Backup (Nightly)
+
+on:
+  schedule:
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: [self-hosted, Linux, X64]
+    environment: production
+    steps:
+      - name: Gate note
+        run: echo "Manual/environment controls apply for backup access."
+      - name: Create backup archive
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          set -euo pipefail
+          TS="$(date -u +%Y%m%dT%H%M%SZ)"
+          BACKUP_DIR="${DEPLOY_PATH}/backups"
+          mkdir -p "${BACKUP_DIR}"
+          tar -czf "${BACKUP_DIR}/aigios-agent-factory-${TS}.tar.gz" \
+            -C "${DEPLOY_PATH}" \
+            releases state logs || true
+          ls -lh "${BACKUP_DIR}"
+      - name: Retention cleanup
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="${DEPLOY_PATH}/backups"
+          if [ -d "${BACKUP_DIR}" ]; then
+            ls -1t "${BACKUP_DIR}"/*.tar.gz 2>/dev/null | tail -n +15 | xargs -r rm -f
+          fi
+          echo "Retention applied (kept latest 14 archives)."
