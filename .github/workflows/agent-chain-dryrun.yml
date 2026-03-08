@@ -42,7 +42,6 @@ jobs:
           AGENT_CHAIN_TIMEOUT: ${{ inputs.timeout_seconds }}
           AGENT_CHAIN_THINKING: ${{ inputs.thinking }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          PATH: /home/ubuntu/.npm-global/bin:${{ env.PATH }}
         run: |
           set -euo pipefail
           export PATH="$HOME/.npm-global/bin:$PATH"
