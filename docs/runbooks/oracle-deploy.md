@@ -1,7 +1,7 @@
-# Oracle Deploy Runbook (v0.1)
+# AWS Deploy Runbook (v0.1)
 
 ## Target
-Single Oracle VM for 3-4 month experimental operation.
+Single AWS EC2 VM for 3-4 month experimental operation.
 
 ## Base Setup
 1. Install Docker + Docker Compose plugin.
@@ -10,7 +10,14 @@ Single Oracle VM for 3-4 month experimental operation.
 - `/opt/aigios-agent-factory`
 - `/opt/aigios-agent-factory/data`
 - `/opt/aigios-agent-factory/logs`
-4. Configure firewall for required ports only.
+4. Configure security group for required ports only.
+
+## AWS Baseline
+- Instance type: `t2.micro` or `t3.micro` (free-tier eligible where available).
+- OS: Ubuntu 22.04 LTS.
+- SSH: allow port `22` from your IP only.
+- Public access: open `80/443` only if you expose services.
+- Optional: attach Elastic IP for a stable host value.
 
 ## Deployment Flow
 1. Pull latest approved commit/tag.
@@ -29,4 +36,3 @@ Single Oracle VM for 3-4 month experimental operation.
 2. Checkout previous known-good tag.
 3. Restore last consistent state snapshot.
 4. Start services and verify health.
-

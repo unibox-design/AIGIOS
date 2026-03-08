@@ -7,7 +7,7 @@
 - Deployment jobs require manual approval environment.
 
 ## Security Controls
-- Secrets only via GitHub/Oracle secret stores.
+- Secrets only via GitHub/cloud secret stores.
 - No plaintext API keys committed.
 - Least-privilege tokens for CI and agents.
 - Weekly dependency and vulnerability scan.
@@ -21,4 +21,3 @@
 - Agents cannot bypass branch protections.
 - Agents cannot directly mutate production infra without approved workflow.
 - All high-risk actions produce a change ticket and rollback plan.
-

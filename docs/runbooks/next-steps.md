@@ -19,18 +19,24 @@ From `/Users/proximity/Documents/AIGIOS/agent-factory`:
 - Enable GitHub environment `production` with required reviewers.
 - Store secrets in GitHub Actions secrets/environment secrets.
 
-## 4) Oracle VM Bootstrapping
+## 4) AWS EC2 Bootstrapping
 1. Clone `aigios-agent-factory` into `/opt/aigios-agent-factory`.
 2. Run `scripts/bootstrap.sh`.
 3. Install and configure OpenClaw per official docs.
 4. Load/adjust `configs/openclaw/gateway.example.yaml` to match installed schema/version.
 
-## 5) Safe Runtime Mode (v0.1)
+## 5) Configure Deployment Secrets (GitHub)
+- `DEPLOY_HOST` (EC2 public IP or DNS)
+- `DEPLOY_USER` (`ubuntu` for Ubuntu AMI)
+- `DEPLOY_SSH_KEY` (private key content, multiline)
+- `DEPLOY_PORT` (`22` unless customized)
+- `DEPLOY_PATH` (for example `/opt/aigios-agent-factory`)
+
+## 6) Safe Runtime Mode (v0.1)
 - Start with read-only research/planning workflows.
 - Allow builder to open PRs only.
 - Keep deploy workflow manual-only.
 
-## 6) Integrate with Existing AIGIOS App
+## 7) Integrate with Existing AIGIOS App
 - Configure builder/qa/ops agents to target the app repo as an external repo.
 - Start with low-risk tasks: docs, test coverage, bugfix PRs.
-
