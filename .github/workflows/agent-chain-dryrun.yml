@@ -24,7 +24,17 @@ jobs:
       - name: Preflight
         run: |
           set -euo pipefail
+          export PATH="$HOME/.npm-global/bin:$PATH"
+          if ! command -v openclaw >/dev/null 2>&1; then
+            if [ -x "$HOME/.npm-global/lib/node_modules/openclaw/openclaw.mjs" ]; then
+              ln -sf "$HOME/.npm-global/lib/node_modules/openclaw/openclaw.mjs" "$HOME/.npm-global/bin/openclaw"
+            fi
+          fi
           command -v openclaw
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
           command -v jq
       - name: Run agent chain
         id: chain
@@ -32,8 +42,10 @@ jobs:
           AGENT_CHAIN_TIMEOUT: ${{ inputs.timeout_seconds }}
           AGENT_CHAIN_THINKING: ${{ inputs.thinking }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PATH: /home/ubuntu/.npm-global/bin:${{ env.PATH }}
         run: |
           set -euo pipefail
+          export PATH="$HOME/.npm-global/bin:$PATH"
           scripts/run_agent_chain.sh "${{ inputs.objective }}"
       - name: Upload artifacts
         if: always()
