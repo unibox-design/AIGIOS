@@ -22,5 +22,12 @@ jobs:
           hostname
           test -d "${{ secrets.DEPLOY_PATH }}" || mkdir -p "${{ secrets.DEPLOY_PATH }}"
           echo "Runner local preflight complete."
-      - name: Deploy placeholder
-        run: echo "Self-hosted runner ready. Wire staged deploy commands next."
+      - name: Deploy release (idempotent)
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          chmod +x scripts/deploy_staging.sh
+          scripts/deploy_staging.sh "${{ inputs.target }}"

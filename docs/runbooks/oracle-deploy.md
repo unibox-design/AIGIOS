@@ -22,8 +22,8 @@ Single AWS EC2 VM for 3-4 month experimental operation.
 ## Deployment Flow
 1. Pull latest approved commit/tag.
 2. Run preflight checks.
-3. Start services in staging profile.
-4. Validate health checks.
+3. Execute `scripts/deploy_staging.sh <target>` to create a versioned release in `/opt/aigios-agent-factory/releases`.
+4. Validate health checks on `/opt/aigios-agent-factory/current`.
 5. Promote to production profile after manual approval.
 
 ## Backup
@@ -32,7 +32,6 @@ Single AWS EC2 VM for 3-4 month experimental operation.
 - Verify restore weekly on staging.
 
 ## Rollback
-1. Stop current services.
-2. Checkout previous known-good tag.
-3. Restore last consistent state snapshot.
-4. Start services and verify health.
+1. Execute `scripts/rollback_release.sh`.
+2. Verify `/opt/aigios-agent-factory/current` points to last known-good release.
+3. Start services and verify health.
