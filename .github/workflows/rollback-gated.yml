@@ -1,0 +1,38 @@
+name: Rollback (Gated)
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Rollback reason"
+        required: true
+        default: "manual rollback"
+
+jobs:
+  rollback:
+    runs-on: [self-hosted, Linux, X64]
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate note
+        run: echo "Manual approval required by GitHub Environment protection rules."
+      - name: Runner preflight (safe)
+        run: |
+          whoami
+          hostname
+          test -d "${{ secrets.DEPLOY_PATH }}"
+          echo "Rollback reason: ${{ inputs.reason }}"
+      - name: Rollback release
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          chmod +x scripts/rollback_release.sh
+          scripts/rollback_release.sh
+      - name: Show rollback state
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          echo "Current release:"
+          readlink "${DEPLOY_PATH}/current"
+          echo "Rollback metadata:"
+          cat "${DEPLOY_PATH}/state/last_rollback.json"
