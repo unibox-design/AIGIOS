@@ -15,6 +15,10 @@ on:
         description: "Thinking level"
         required: false
         default: "low"
+      fail_on_nogo:
+        description: "Fail workflow when governor returns NO-GO (true/false)"
+        required: false
+        default: "false"
 
 jobs:
   dry_run:
@@ -38,6 +42,7 @@ jobs:
           command -v jq
       - name: Run agent chain
         id: chain
+        continue-on-error: true
         env:
           AGENT_CHAIN_TIMEOUT: ${{ inputs.timeout_seconds }}
           AGENT_CHAIN_THINKING: ${{ inputs.thinking }}
@@ -46,6 +51,36 @@ jobs:
           set -euo pipefail
           export PATH="$HOME/.npm-global/bin:$PATH"
           scripts/run_agent_chain.sh "${{ inputs.objective }}"
+      - name: Publish decision summary
+        if: always()
+        run: |
+          set -euo pipefail
+          OUT_DIR="${{ steps.chain.outputs.out_dir }}"
+          DECISION="${{ steps.chain.outputs.decision }}"
+          if [ -z "$DECISION" ]; then
+            DECISION="UNKNOWN"
+          fi
+          {
+            echo "## Agent Chain Result"
+            echo
+            echo "- Decision: **${DECISION}**"
+            echo "- Objective: `${{ inputs.objective }}`"
+            echo "- Output dir: `${OUT_DIR}`"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$OUT_DIR" ] && [ -f "${OUT_DIR}/summary.md" ]; then
+            cat "${OUT_DIR}/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Enforce NO-GO policy
+        if: always()
+        run: |
+          set -euo pipefail
+          DECISION="${{ steps.chain.outputs.decision }}"
+          FAIL_ON_NOGO="${{ inputs.fail_on_nogo }}"
+          if [ "$DECISION" = "NO-GO" ] && [ "$FAIL_ON_NOGO" = "true" ]; then
+            echo "Governor decision is NO-GO and fail_on_nogo=true."
+            exit 2
+          fi
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
