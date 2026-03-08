@@ -35,3 +35,4 @@ Single AWS EC2 VM for 3-4 month experimental operation.
 1. Execute `scripts/rollback_release.sh`.
 2. Verify `/opt/aigios-agent-factory/current` points to last known-good release.
 3. Start services and verify health.
+4. For controlled rollback via GitHub, run `Rollback (Gated)` workflow and approve `production`.
